@@ -8,7 +8,6 @@ function Navbar() {
         <div className="text-white">
           <Link className="mr-4 hover:text-gray-400" to="/">Home</Link>
           <Link className="mr-4 hover:text-gray-400" to="/about">About</Link>
-          <Link className="hover:text-gray-400" to="/top-cats">Top Cats</Link>
         </div>
       </div>
     </nav>

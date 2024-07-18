@@ -26,7 +26,7 @@ function TopCats() {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-4">Top 10 Cats</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         {topCats.map((cat, index) => (
           <CatCard
             key={index}
@@ -38,7 +38,7 @@ function TopCats() {
         ))}
       </div>
       <h1 className="text-3xl font-bold my-8">Worst 10 Cats</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         {worstCats.map((cat, index) => (
           <CatCard
             key={index}
