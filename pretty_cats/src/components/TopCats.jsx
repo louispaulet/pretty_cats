@@ -1,4 +1,3 @@
-// src/components/TopCats.jsx
 import { useEffect, useState } from 'react';
 import Papa from 'papaparse';
 import CatCard from './CatCard';
@@ -8,14 +7,16 @@ function TopCats() {
   const [worstCats, setWorstCats] = useState([]);
 
   useEffect(() => {
-    fetch('/cats_ordered_by_prettiest.csv')
+    fetch('/9k_cats_multi_scores.csv')
       .then((response) => response.text())
       .then((csvText) => {
         Papa.parse(csvText, {
           header: true,
           dynamicTyping: true,
           complete: function (results) {
-            const sortedCats = results.data;
+            let sortedCats = results.data;
+            // Sort the cats by total_score in descending order
+            sortedCats = sortedCats.sort((a, b) => b.total_score - a.total_score);
             setTopCats(sortedCats.slice(0, 10));
             setWorstCats(sortedCats.slice(-10));
           },
@@ -30,10 +31,10 @@ function TopCats() {
         {topCats.map((cat, index) => (
           <CatCard
             key={index}
-            prettyPosition={cat.pretty_position}
-            imageNumber={cat.image_number}
-            prettyScore={cat.pretty_score}
-            url={cat.url}
+            prettyPosition={index+1}
+            imageNumber={cat.image_index}
+            prettyScore={cat.total_score}
+            url={cat.image_url}
           />
         ))}
       </div>
@@ -42,10 +43,10 @@ function TopCats() {
         {worstCats.map((cat, index) => (
           <CatCard
             key={index}
-            prettyPosition={cat.pretty_position}
-            imageNumber={cat.image_number}
-            prettyScore={cat.pretty_score}
-            url={cat.url}
+            prettyPosition={index+1}
+            imageNumber={cat.image_index}
+            prettyScore={cat.total_score}
+            url={cat.image_url}
           />
         ))}
       </div>
