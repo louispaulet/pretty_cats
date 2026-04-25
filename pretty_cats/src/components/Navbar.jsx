@@ -6,7 +6,7 @@ function Navbar() {
       <div className="container mx-auto flex justify-between items-center">
         <div className="flex items-center">
           <Link to="/" className="flex items-center">
-            <img src="/pretty_cat_logo.webp" alt="Pretty Cats Logo" className="h-8 w-8 mr-2" />
+            <img src="/logo.webp" alt="Pretty Cats Logo" className="h-8 w-8 mr-2" />
             <span className="text-white text-xl font-bold">Pretty Cats</span>
           </Link>
         </div>
