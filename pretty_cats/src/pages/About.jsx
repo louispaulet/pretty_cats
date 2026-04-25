@@ -7,9 +7,9 @@ function About() {
             <p className="mb-3 text-sm font-semibold uppercase tracking-[0.35em] text-amber-700">Project details</p>
             <h1 className="text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">About Pretty Cats</h1>
             <p className="mt-5 max-w-3xl text-lg leading-8 text-slate-600">
-              This project uses a CLIP-based scoring script to rank cat images by how closely they match a
-              "pretty cat" concept relative to an "ugly cat" concept. The app then serves the ordered leaderboard
-              as a CSV and JSON export.
+              This project uses OpenAI’s CLIP model to rank a massive collection of 9,936 cat images.
+              By comparing every photo against "pretty" and "ugly" text prompts, we’ve created a data-driven
+              leaderboard of the world’s most (and least) aesthetically pleasing felines.
             </p>
           </header>
 
@@ -19,31 +19,36 @@ function About() {
                 <span className="mr-4 flex h-8 w-8 items-center justify-center rounded-full bg-amber-100 text-sm font-bold text-amber-700">
                   01
                 </span>
-                <h2 className="text-2xl font-bold text-slate-900">The scoring script</h2>
+                <h2 className="text-2xl font-bold text-slate-900">The CLIP Model</h2>
               </div>
               <div className="pl-12">
                 <p className="mb-6 text-lg leading-relaxed text-slate-600">
+                  CLIP (Contrastive Language-Image Pre-training) is a neural network trained on a wide variety of
+                  (image, text) pairs. Unlike traditional vision models that only recognize specific labels, CLIP
+                  understands natural language concepts and can "see" how well an image matches a text description.
+                </p>
+                <p className="mb-6 text-lg leading-relaxed text-slate-600">
                   The ranking is produced by <code className="rounded bg-slate-100 px-1.5 py-0.5 text-sm">score_pretty_cats.py</code>.
-                  It loads the OpenAI CLIP model <strong>openai/clip-vit-base-patch32</strong> through
-                  <strong> transformers</strong>, downloads each image from the Google Cloud Storage bucket, and scores
-                  every cat against two fixed prompts.
+                  It loads <strong>openai/clip-vit-base-patch32</strong> and scores every cat against two reference prompts:
                 </p>
 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="rounded-3xl border border-amber-100 bg-white/60 p-6 shadow-sm">
                     <p className="mb-2 text-xs font-bold uppercase tracking-wider text-amber-800">Pretty prompt</p>
-                    <p className="text-slate-700 italic">"this is a pretty cat"</p>
+                    <p className="text-slate-700 italic">"picture of a pretty cat"</p>
                   </div>
                   <div className="rounded-3xl border border-slate-100 bg-white/60 p-6 shadow-sm">
                     <p className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-400">Ugly prompt</p>
-                    <p className="text-slate-700 italic">"this is an ugly cat"</p>
+                    <p className="text-slate-700 italic">"picture of an ugly cat"</p>
                   </div>
                 </div>
 
                 <div className="mt-8 rounded-3xl bg-slate-950 p-6 text-white shadow-lg">
-                  <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Core score</p>
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">The Prettiness Score</p>
                   <p className="text-lg leading-8">
-                    <span className="font-semibold text-amber-400">global_score</span> ={' '}
+                    We calculate the cosine similarity between the image embedding and the text embeddings.
+                    The <span className="font-semibold text-amber-400">global_score</span> is the difference:
+                    <br />
                     <span className="text-slate-200">pretty_similarity</span> −{' '}
                     <span className="text-slate-400">ugly_similarity</span>
                   </p>
@@ -56,38 +61,27 @@ function About() {
                 <span className="mr-4 flex h-8 w-8 items-center justify-center rounded-full bg-amber-100 text-sm font-bold text-amber-700">
                   02
                 </span>
-                <h2 className="text-2xl font-bold text-slate-900">What gets computed</h2>
+                <h2 className="text-2xl font-bold text-slate-900">Multi-Prompt Experiment</h2>
               </div>
               <div className="pl-12">
                 <p className="mb-6 text-lg leading-relaxed text-slate-600">
-                  For each image, the script stores the raw CLIP similarities, the scaled logits produced by the model,
-                  and a two-class softmax probability over the pretty and ugly prompts. The leaderboard is sorted by the
-                  global score, then by pretty similarity, then by image number for deterministic ties.
+                  While the main leaderboard uses a simple pretty/ugly binary, we also conducted a larger experiment
+                  scoring cats against a wider range of 20+ descriptive adjectives to see how CLIP's perception shifts.
                 </p>
 
-                <div className="grid gap-4 md:grid-cols-2">
-                  <article className="rounded-[2rem] border border-amber-100 bg-white/60 p-6 shadow-sm">
-                    <h3 className="mb-3 text-xl font-bold text-amber-900">Per-image fields</h3>
-                    <ul className="space-y-2 text-slate-600">
-                      <li>• <code>pretty_similarity</code></li>
-                      <li>• <code>ugly_similarity</code></li>
-                      <li>• <code>global_score</code></li>
-                      <li>• <code>pretty_logit</code></li>
-                      <li>• <code>ugly_logit</code></li>
-                      <li>• <code>pretty_probability</code></li>
-                      <li>• <code>ugly_probability</code></li>
-                    </ul>
-                  </article>
-                  <article className="rounded-[2rem] border border-slate-100 bg-white/60 p-6 shadow-sm">
-                    <h3 className="mb-3 text-xl font-bold text-slate-900">Leaderboard ordering</h3>
-                    <ul className="space-y-2 text-slate-600">
-                      <li>• Highest <code>global_score</code> first</li>
-                      <li>• Then higher <code>pretty_similarity</code></li>
-                      <li>• Then lower <code>image_number</code> for ties</li>
-                      <li>• A <code>leaderboard_position</code> column is inserted after sorting</li>
-                    </ul>
-                  </article>
+                <div className="flex flex-wrap gap-2">
+                  {['Beautiful', 'Cute', 'Lovely', 'Charming', 'Adorable', 'Elegant', 'Graceful', 'Handsome', 'Gorgeous', 'Photogenic', 'Stunning', 'Majestic'].map((adj) => (
+                    <span key={adj} className="rounded-full bg-slate-100 px-3 py-1 text-sm font-medium text-slate-600 ring-1 ring-slate-200">
+                      {adj}
+                    </span>
+                  ))}
+                  <span className="px-2 py-1 text-sm text-slate-400 italic">and more...</span>
                 </div>
+                
+                <p className="mt-6 text-lg leading-relaxed text-slate-600">
+                  The results of this multi-prompt evaluation are stored in the <code className="rounded bg-slate-100 px-1.5 py-0.5 text-sm">9k_cats_multi_scores.csv</code> export,
+                  capturing the nuance between a "cute" cat and a "majestic" one.
+                </p>
               </div>
             </section>
 
@@ -96,30 +90,38 @@ function About() {
                 <span className="mr-4 flex h-8 w-8 items-center justify-center rounded-full bg-amber-100 text-sm font-bold text-amber-700">
                   03
                 </span>
-                <h2 className="text-2xl font-bold text-slate-900">Image handling and batching</h2>
+                <h2 className="text-2xl font-bold text-slate-900">Dataset and Processing</h2>
               </div>
               <div className="pl-12">
                 <p className="mb-6 text-lg leading-relaxed text-slate-600">
-                  Images are fetched from <code className="rounded bg-slate-100 px-1.5 py-0.5 text-sm">https://storage.googleapis.com/pretty_cats/image_{'{'}image_number{'}'}.jpg</code>
-                  using a retrying HTTP session. Downloads are cached locally so reruns do not re-fetch the same files.
-                  The script processes cats in batches, defaulting to 32 images per batch, to keep model inference
-                  efficient.
+                  The full dataset consists of <strong>9,936 images</strong> hosted on Google Cloud Storage.
+                  Processing this volume required a robust batching and caching system.
                 </p>
 
-                <div className="grid gap-4 sm:grid-cols-3">
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                  <div className="rounded-3xl border border-white bg-white/70 p-6 shadow-sm">
+                    <p className="text-sm font-semibold text-slate-500">Total cats</p>
+                    <p className="mt-2 text-3xl font-black text-slate-950">9,936</p>
+                  </div>
                   <div className="rounded-3xl border border-white bg-white/70 p-6 shadow-sm">
                     <p className="text-sm font-semibold text-slate-500">Batch size</p>
                     <p className="mt-2 text-3xl font-black text-slate-950">32</p>
                   </div>
                   <div className="rounded-3xl border border-white bg-white/70 p-6 shadow-sm">
-                    <p className="text-sm font-semibold text-slate-500">HTTP retries</p>
-                    <p className="mt-2 text-3xl font-black text-slate-950">4</p>
+                    <p className="text-sm font-semibold text-slate-500">Inference</p>
+                    <p className="mt-2 text-3xl font-black text-slate-950">GPU</p>
                   </div>
                   <div className="rounded-3xl border border-white bg-white/70 p-6 shadow-sm">
-                    <p className="text-sm font-semibold text-slate-500">Device</p>
-                    <p className="mt-2 text-3xl font-black text-slate-950">MPS / CUDA / CPU</p>
+                    <p className="text-sm font-semibold text-slate-500">Retries</p>
+                    <p className="mt-2 text-3xl font-black text-slate-950">4</p>
                   </div>
                 </div>
+
+                <p className="mt-8 text-lg leading-relaxed text-slate-600">
+                  Images are fetched via a retrying HTTP session to handle transient network issues. 
+                  In the rare event of a missing or corrupt image, the <code className="rounded bg-slate-100 px-1.5 py-0.5 text-sm">--skip-missing</code> flag 
+                  ensures the pipeline continues, resulting in our final verified leaderboard.
+                </p>
               </div>
             </section>
 
@@ -145,7 +147,7 @@ function About() {
                     <p className="text-slate-600 leading-relaxed">
                       If an image cannot be downloaded or decoded, the default behavior is to stop immediately. The
                       <code className="rounded bg-slate-100 px-1.5 py-0.5 text-sm">--skip-missing</code> flag skips
-                      those images instead, which is how the final 9,935-row export was produced after one 404.
+                      those images instead, which is how the final 9,936-row export was produced.
                     </p>
                   </div>
                 </div>
