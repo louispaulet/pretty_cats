@@ -1,18 +1,9 @@
-// src/pages/Home.jsx
-import { useState } from 'react';
-import reactLogo from '../assets/react.svg';
-import viteLogo from '/vite.svg';
 import TopCats from './../components/TopCats';
 
-
 function Home() {
-  const [count, setCount] = useState(0);
-
   return (
-    <div className="container mx-auto p-4">
-      <div className="flex justify-center items-center flex-col">
-        <TopCats />
-      </div>
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(251,191,36,0.16),_transparent_34%),linear-gradient(180deg,_#fffaf2_0%,_#ffffff_30%,_#f8fafc_100%)]">
+      <TopCats />
     </div>
   );
 }
