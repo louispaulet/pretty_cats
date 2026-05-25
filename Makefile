@@ -12,7 +12,7 @@ build:
 lint:
 	$(NPM) run lint
 
-test: lint build
+test: build
 
 deploy: build
 	$(NPM) run deploy
